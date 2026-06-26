@@ -1,0 +1,100 @@
+<svg viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg" font-family="Calibri, Arial, sans-serif">
+  <rect width="1000" height="620" fill="#0C1A24"/>
+  <text x="500" y="48" text-anchor="middle" fill="#FFFFFF" font-size="30" font-weight="bold" font-family="Georgia, serif">Pinjas Knowledge Infrastructure</text>
+  <text x="500" y="76" text-anchor="middle" fill="#94A3B8" font-size="15">Ecosistema digital janitor / organizational chaos clarifier · ES · EN · HE</text>
+
+  <!-- Ecosystem hub -->
+  <rect x="350" y="100" width="300" height="64" rx="12" fill="#162433" stroke="#D4A017" stroke-width="2"/>
+  <text x="500" y="128" text-anchor="middle" fill="#D4A017" font-size="17" font-weight="bold">ECOSISTEMA</text>
+  <text x="500" y="150" text-anchor="middle" fill="#FFFFFF" font-size="13">Apps web + móvil + Windows</text>
+
+  <!-- connectors hub -> products -->
+  <g stroke="#1A936F" stroke-width="2" fill="none">
+    <path d="M500 164 L140 224"/>
+    <path d="M500 164 L380 224"/>
+    <path d="M500 164 L620 224"/>
+    <path d="M500 164 L860 224"/>
+  </g>
+
+  <!-- product boxes -->
+  <g>
+    <rect x="30" y="224" width="220" height="120" rx="12" fill="#162433" stroke="#1A936F" stroke-width="2"/>
+    <text x="140" y="252" text-anchor="middle" fill="#1A936F" font-size="16" font-weight="bold">1 · CHASKY (hoy)</text>
+    <text x="140" y="276" text-anchor="middle" fill="#FFFFFF" font-size="12">WhatsApp knowledge pipeline</text>
+    <text x="140" y="294" text-anchor="middle" fill="#94A3B8" font-size="11">Transcripción fiel · manuscritos</text>
+    <text x="140" y="310" text-anchor="middle" fill="#94A3B8" font-size="11">elegantes · archivo ordenado</text>
+    <text x="140" y="330" text-anchor="middle" fill="#D4A017" font-size="11">1,186 audios → 354 pp</text>
+
+    <rect x="270" y="224" width="220" height="120" rx="12" fill="#162433" stroke="#D4A017" stroke-width="2"/>
+    <text x="380" y="252" text-anchor="middle" fill="#D4A017" font-size="16" font-weight="bold">2 · DIGITAL JANITOR</text>
+    <text x="380" y="276" text-anchor="middle" fill="#FFFFFF" font-size="12">Clarificador del caos digital</text>
+    <text x="380" y="294" text-anchor="middle" fill="#94A3B8" font-size="11">Apuntes · redes · IAs · drives</text>
+    <text x="380" y="310" text-anchor="middle" fill="#94A3B8" font-size="11">Menos estrés, más claridad</text>
+    <text x="380" y="330" text-anchor="middle" fill="#D4A017" font-size="11">Fase 2 · 6–18 meses</text>
+
+    <rect x="510" y="224" width="220" height="120" rx="12" fill="#162433" stroke="#D4A017" stroke-width="2"/>
+    <text x="620" y="252" text-anchor="middle" fill="#D4A017" font-size="16" font-weight="bold">3 · KNOWLEDGE EXP.</text>
+    <text x="620" y="276" text-anchor="middle" fill="#FFFFFF" font-size="12">Expansión y organización</text>
+    <text x="620" y="294" text-anchor="middle" fill="#94A3B8" font-size="11">Bases de conocimiento buscables</text>
+    <text x="620" y="310" text-anchor="middle" fill="#94A3B8" font-size="11">Conectado · visualizado</text>
+    <text x="620" y="330" text-anchor="middle" fill="#D4A017" font-size="11">Fase 2–3</text>
+
+    <rect x="750" y="224" width="220" height="120" rx="12" fill="#162433" stroke="#1A936F" stroke-width="2"/>
+    <text x="860" y="252" text-anchor="middle" fill="#1A936F" font-size="16" font-weight="bold">4 · MANUSCRITOS + ©</text>
+    <text x="860" y="276" text-anchor="middle" fill="#FFFFFF" font-size="12">Publicación + copyright digital</text>
+    <text x="860" y="294" text-anchor="middle" fill="#94A3B8" font-size="11">Listos para revisar y publicar</text>
+    <text x="860" y="310" text-anchor="middle" fill="#94A3B8" font-size="11">Procedencia verificable</text>
+    <text x="860" y="330" text-anchor="middle" fill="#D4A017" font-size="11">Fase 3 · on-chain</text>
+  </g>
+
+  <!-- CHASKY pipeline detail -->
+  <text x="500" y="392" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold" font-family="Georgia, serif">Pipeline CHASKY</text>
+  <g stroke="#1A936F" stroke-width="2" fill="none">
+    <path d="M192 446 L218 446" marker-end="url(#arr)"/>
+    <path d="M384 446 L410 446" marker-end="url(#arr)"/>
+    <path d="M576 446 L602 446" marker-end="url(#arr)"/>
+    <path d="M768 446 L794 446" marker-end="url(#arr)"/>
+  </g>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#1A936F"/>
+    </marker>
+  </defs>
+  <g>
+    <rect x="32" y="412" width="160" height="68" rx="10" fill="#162433" stroke="#94A3B8"/>
+    <text x="112" y="438" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">INGESTA</text>
+    <text x="112" y="456" text-anchor="middle" fill="#94A3B8" font-size="10.5">Chat bot · export .zip</text>
+    <text x="112" y="470" text-anchor="middle" fill="#94A3B8" font-size="10.5">archivos del celular</text>
+
+    <rect x="224" y="412" width="160" height="68" rx="10" fill="#162433" stroke="#94A3B8"/>
+    <text x="304" y="438" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">CONTEXTO</text>
+    <text x="304" y="456" text-anchor="middle" fill="#94A3B8" font-size="10.5">Metadata + audio unidos</text>
+    <text x="304" y="470" text-anchor="middle" fill="#94A3B8" font-size="10.5">sin confusión de hablador</text>
+
+    <rect x="416" y="412" width="160" height="68" rx="10" fill="#162433" stroke="#94A3B8"/>
+    <text x="496" y="438" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">TRANSCRIPCIÓN</text>
+    <text x="496" y="456" text-anchor="middle" fill="#94A3B8" font-size="10.5">Tecnología avanzada,</text>
+    <text x="496" y="470" text-anchor="middle" fill="#94A3B8" font-size="10.5">fiel y coherente</text>
+
+    <rect x="608" y="412" width="160" height="68" rx="10" fill="#162433" stroke="#94A3B8"/>
+    <text x="688" y="438" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">FORMATO</text>
+    <text x="688" y="456" text-anchor="middle" fill="#94A3B8" font-size="10.5">Documentos · manuscritos</text>
+    <text x="688" y="470" text-anchor="middle" fill="#94A3B8" font-size="10.5">elegantes · cualquier archivo</text>
+
+    <rect x="800" y="412" width="168" height="68" rx="10" fill="#162433" stroke="#1A936F" stroke-width="2"/>
+    <text x="884" y="438" text-anchor="middle" fill="#1A936F" font-size="12" font-weight="bold">ENTREGA</text>
+    <text x="884" y="456" text-anchor="middle" fill="#94A3B8" font-size="10.5">WhatsApp · correo · interfaz</text>
+    <text x="884" y="470" text-anchor="middle" fill="#94A3B8" font-size="10.5">móvil / web / Windows</text>
+  </g>
+
+  <!-- Funnel + Web3 strip -->
+  <rect x="32" y="512" width="588" height="76" rx="10" fill="#0F2230" stroke="#D4A017"/>
+  <text x="326" y="538" text-anchor="middle" fill="#D4A017" font-size="13" font-weight="bold">FUNNEL DE CAMPAÑA (cero pauta paga)</text>
+  <text x="326" y="560" text-anchor="middle" fill="#FFFFFF" font-size="11.5">Post / demo → Landing → Waitlist → Email nurture → Early access → Manuscrito → Referido</text>
+  <text x="326" y="578" text-anchor="middle" fill="#94A3B8" font-size="10.5">KPIs: CPL · registros · audios procesados · retención · referidos · DAU</text>
+
+  <rect x="640" y="512" width="328" height="76" rx="10" fill="#0F2230" stroke="#1A936F"/>
+  <text x="804" y="538" text-anchor="middle" fill="#1A936F" font-size="13" font-weight="bold">CAPA WEB3 (roadmap honesto)</text>
+  <text x="804" y="560" text-anchor="middle" fill="#FFFFFF" font-size="11.5">Whisper local (ahora) → vaults del usuario (F2)</text>
+  <text x="804" y="578" text-anchor="middle" fill="#94A3B8" font-size="10.5">→ hash on-chain + IPFS (F3) · nunca token especulativo</text>
+</svg>

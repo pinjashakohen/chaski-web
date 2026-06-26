@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CHASKY — Tu conocimiento vive en WhatsApp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --green:#25D366;
+    --green-deep:#0f8a4f;
+    --teal:#0bd4c0;
+    --ink:#04130c;
+    --bg:#04100a;
+    --glass:rgba(12,30,22,0.45);
+    --glass-line:rgba(37,211,102,0.28);
+    --text:#e9fff3;
+    --muted:#9fc8b3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #scene{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;
+    background-image:radial-gradient(rgba(255,255,255,.6) .5px,transparent .5px);
+    background-size:3px 3px;mix-blend-mode:overlay}
+  .content{position:relative;z-index:2}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;
+    justify-content:space-between;padding:22px clamp(20px,5vw,64px);
+    backdrop-filter:blur(6px);}
+  .brand{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;
+    font-weight:700;letter-spacing:.18em;font-size:18px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 18px var(--green),0 0 40px var(--green)}
+  .navlinks{display:flex;gap:30px;font-size:13.5px;letter-spacing:.04em;color:var(--muted)}
+  .navlinks a{color:inherit;text-decoration:none;transition:color .25s}
+  .navlinks a:hover{color:var(--green)}
+  @media(max-width:760px){.navlinks{display:none}}
+
+  section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    padding:120px clamp(20px,7vw,140px)}
+  .tag{font-family:'Space Grotesk',sans-serif;font-size:12.5px;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--green);margin-bottom:22px;
+    display:flex;align-items:center;gap:14px}
+  .tag::before{content:"";width:38px;height:1px;background:var(--green);opacity:.6}
+
+  /* HERO */
+  .hero h1{font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(46px,9vw,128px);line-height:.95;letter-spacing:-.02em;
+    background:linear-gradient(180deg,#ffffff 10%,#bff7d6 60%,var(--green) 130%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 80px rgba(37,211,102,.25)}
+  .hero .lead{margin-top:30px;max-width:620px;font-size:clamp(17px,2.2vw,22px);
+    line-height:1.5;color:var(--text);font-weight:300}
+  .hero .lead b{color:var(--green);font-weight:600}
+  .sub{margin-top:14px;color:var(--muted);font-size:15px;max-width:560px;line-height:1.6}
+  .cta-row{margin-top:42px;display:flex;gap:16px;flex-wrap:wrap}
+  .btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;
+    padding:15px 30px;border-radius:40px;cursor:pointer;border:1px solid transparent;
+    text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:all .3s}
+  .btn.primary{background:var(--green);color:#04130c;box-shadow:0 0 30px rgba(37,211,102,.4)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(37,211,102,.65)}
+  .btn.ghost{border-color:var(--glass-line);color:var(--text);background:var(--glass);
+    backdrop-filter:blur(10px)}
+  .btn.ghost:hover{border-color:var(--green);color:var(--green)}
+
+  .scroll-hint{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);
+    font-size:11px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;
+    display:flex;flex-direction:column;align-items:center;gap:10px;animation:bob 2.4s ease-in-out infinite}
+  .scroll-hint span{width:1px;height:34px;background:linear-gradient(var(--green),transparent)}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+  /* GLASS CARD GENERIC */
+  .glass{background:var(--glass);border:1px solid var(--glass-line);
+    border-radius:22px;backdrop-filter:blur(14px);
+    box-shadow:0 20px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06)}
+  h2.section-title{font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(32px,5vw,62px);line-height:1.02;letter-spacing:-.02em;max-width:14ch}
+  .section-title em{font-style:normal;color:var(--green)}
+  .section-intro{margin-top:22px;max-width:600px;color:var(--muted);font-size:17px;line-height:1.6}
+
+  /* PROBLEM */
+  .opus{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
+  .opus .chip{font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.05em;
+    padding:11px 18px;border-radius:30px;border:1px dashed rgba(159,200,179,.35);
+    color:var(--muted)}
+  .opus .chip.dead::after{content:" ✕";color:#ff6b6b}
+
+  /* PIPELINE */
+  .pipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;margin-top:54px}
+  .step{padding:30px;position:relative;overflow:hidden}
+  .step .num{font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.2em;
+    color:var(--green);opacity:.8}
+  .step h3{font-family:'Space Grotesk',sans-serif;font-size:22px;margin:14px 0 12px}
+  .step p{color:var(--muted);font-size:15px;line-height:1.6}
+  .step .glow{position:absolute;width:140px;height:140px;border-radius:50%;
+    background:radial-gradient(var(--green),transparent 70%);opacity:.18;
+    top:-40px;right:-40px;filter:blur(6px)}
+
+  /* SURFACES */
+  .surfaces{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:50px}
+  .surface{padding:26px;display:flex;flex-direction:column;gap:12px;min-height:170px}
+  .surface .ico{font-size:30px}
+  .surface h4{font-family:'Space Grotesk',sans-serif;font-size:18px}
+  .surface p{color:var(--muted);font-size:14px;line-height:1.55}
+
+  /* PROOF */
+  .proof-wrap{display:flex;flex-wrap:wrap;gap:40px;align-items:center;margin-top:50px}
+  .stat{padding:34px 42px;text-align:center}
+  .stat .big{font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(48px,8vw,90px);line-height:1;
+    background:linear-gradient(180deg,#fff,var(--green));-webkit-background-clip:text;
+    background-clip:text;color:transparent}
+  .stat .label{margin-top:10px;color:var(--muted);font-size:14px;letter-spacing:.05em}
+  .proof-text{max-width:420px;color:var(--muted);font-size:17px;line-height:1.65}
+  .proof-text b{color:var(--text)}
+
+  /* CTA FINAL */
+  .final{align-items:center;text-align:center}
+  .final h2{font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(36px,7vw,84px);line-height:1;letter-spacing:-.02em;max-width:16ch}
+  .final p{margin-top:24px;color:var(--muted);font-size:18px;max-width:540px}
+  footer{padding:50px;text-align:center;color:var(--muted);font-size:13px;
+    border-top:1px solid rgba(159,200,179,.12);letter-spacing:.04em}
+  footer b{color:var(--green)}
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity .9s ease,transform .9s ease}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div class="grain"></div>
+
+<nav>
+  <div class="brand"><span class="dot"></span>CHASKY</div>
+  <div class="navlinks">
+    <a href="#problem">The Problem</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#surfaces">Surfaces</a>
+    <a href="#proof">Proof</a>
+    <a href="#start">Start</a>
+  </div>
+</nav>
+
+<div class="content">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="tag">Pinjas Knowledge Infrastructure</div>
+    <h1>Your voice,<br>made eternal.</h1>
+    <p class="lead"><b>Tu conocimiento vive en WhatsApp.</b> CHASKY lo hace utilizable — turning years of trapped audio into searchable, printable, beautiful manuscripts.</p>
+    <p class="sub">Powered by the JumashEmet engine. Upload a chat export, and walk away with a document that preserves every timestamp, every sender, every word — verbatim.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="../#waitlist">Request early access →</a>
+      <a class="btn ghost" href="#pipeline">See how it works</a>
+    </div>
+    <div class="scroll-hint">Scroll<span></span></div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section id="problem">
+    <div class="reveal">
+      <div class="tag">The Problem</div>
+      <h2 class="section-title">Years of wisdom, <em>locked in .opus</em></h2>
+      <p class="section-intro">Voice notes pile up in WhatsApp by the thousand — Torah classes, Geulah talks, family history, business decisions. Unsearchable. Unprintable. Gone the moment a chat is deleted.</p>
+      <div class="opus">
+        <span class="chip dead">PTT-20260101.opus</span>
+        <span class="chip dead">AUDIO-0042.opus</span>
+        <span class="chip dead">shiur-tape.opus</span>
+        <span class="chip dead">8m 13s · unread</span>
+        <span class="chip dead">no transcript</span>
+        <span class="chip dead">lost on delete</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section id="pipeline">
+    <div class="reveal">
+      <div class="tag">The Pipeline</div>
+      <h2 class="section-title">From <em>raw audio</em> to finished manuscript</h2>
+      <p class="section-intro">A two-layer engine. L1 captures everything faithfully. L2 shapes it into something you'd be proud to publish.</p>
+    </div>
+    <div class="pipe">
+      <div class="step glass reveal"><div class="glow"></div><div class="num">01 · INGEST</div><h3>Drop your export</h3><p>Upload a WhatsApp chat zip. Audio, timestamps, and senders are parsed automatically — nothing manual.</p></div>
+      <div class="step glass reveal"><div class="glow"></div><div class="num">02 · L1 ARCHIVE</div><h3>Verbatim transcript</h3><p>ASR transcribes every clip into a chronological archive, exported as Markdown and PDF — preserving who said what, and when.</p></div>
+      <div class="step glass reveal"><div class="glow"></div><div class="num">03 · L2 MANUSCRIPT</div><h3>Polished document</h3><p>Thematic sections, borrowed-word titles, elegant typography. A readable manuscript — never paraphrased, always faithful.</p></div>
+      <div class="step glass reveal"><div class="glow"></div><div class="num">04 · DELIVER</div><h3>Wherever you are</h3><p>Sent back to WhatsApp, email, or your own CHASKY space. Ready to share, archive, or register for copyright.</p></div>
+    </div>
+  </section>
+
+  <!-- SURFACES -->
+  <section id="surfaces">
+    <div class="reveal">
+      <div class="tag">One Engine, Many Doors</div>
+      <h2 class="section-title">Meet you <em>where your knowledge lives</em></h2>
+      <p class="section-intro">More flexible than TurboScribe — and built around the messenger you already use every day.</p>
+    </div>
+    <div class="surfaces">
+      <div class="surface glass reveal"><div class="ico">💬</div><h4>WhatsApp Bot</h4><p>Forward audio to a number. Get a manuscript back. No app to learn.</p></div>
+      <div class="surface glass reveal"><div class="ico">📱</div><h4>Web & Mobile App</h4><p>Upload, track progress, and download finished documents from anywhere.</p></div>
+      <div class="surface glass reveal"><div class="ico">🪟</div><h4>Windows Software</h4><p>Run the pipeline locally — private, batch-capable, zero cloud cost.</p></div>
+      <div class="surface glass reveal"><div class="ico">🗂️</div><h4>Drive Janitor</h4><p>Parse, organize, visualize and cull files hidden away in Google Drive.</p></div>
+    </div>
+  </section>
+
+  <!-- PROOF -->
+  <section id="proof">
+    <div class="reveal">
+      <div class="tag">Proof, not promises</div>
+      <h2 class="section-title">The <em>Shmuel pilot</em></h2>
+    </div>
+    <div class="proof-wrap reveal">
+      <div class="stat glass">
+        <div class="big">1186<span style="font-size:.4em;color:var(--muted)">/1186</span></div>
+        <div class="label">L1 transcripts completed</div>
+      </div>
+      <p class="proof-text">A complete chat archive — <b>every single clip</b> transcribed, timestamped, and assembled into a chronological manuscript. Not a demo. A finished body of work, used as living proof that the engine scales to a lifetime of recordings.</p>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section id="start" class="final">
+    <div class="reveal">
+      <div class="tag" style="justify-content:center">Start your archive</div>
+      <h2>Don't let another voice note disappear.</h2>
+      <p>Bring your WhatsApp history into the light — searchable, printable, and yours forever.</p>
+      <div class="cta-row" style="justify-content:center;margin-top:38px">
+        <a class="btn primary" href="../#waitlist">Get early access →</a>
+        <a class="btn ghost" href="#problem">Back to top</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>CHASKY</b> · JumashEmet engine · Pinjas Knowledge Infrastructure<br>
+    Tu conocimiento vive en WhatsApp. CHASKY lo hace utilizable. · ES / EN / עב
+  </footer>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x04100a, 0.035);
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 100);
+camera.position.set(0,0,11);
+
+// procedural environment for real glass reflections (offline)
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+// lights — neon accents
+const key = new THREE.PointLight(0x25D366, 60, 60); key.position.set(6,6,8); scene.add(key);
+const rim = new THREE.PointLight(0x0bd4c0, 40, 60); rim.position.set(-8,-4,4); scene.add(rim);
+const fill = new THREE.PointLight(0xffffff, 12, 60); fill.position.set(0,3,10); scene.add(fill);
+scene.add(new THREE.AmbientLight(0x0a3a24, 1.2));
+
+// glass material factory
+function glassMat(tint){
+  return new THREE.MeshPhysicalMaterial({
+    color: tint, metalness:0, roughness:0.04, transmission:1, thickness:1.6,
+    ior:1.45, clearcoat:1, clearcoatRoughness:0.08, transparent:true,
+    attenuationColor: new THREE.Color(0x25D366), attenuationDistance:3.2,
+    envMapIntensity:1.4
+  });
+}
+
+const group = new THREE.Group(); scene.add(group);
+
+// central hero crystal
+const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2.4,1), glassMat(0xeafff2));
+group.add(core);
+// neon wire shell
+const wire = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(2.55,1)),
+  new THREE.LineBasicMaterial({ color:0x25D366, transparent:true, opacity:0.55 })
+);
+group.add(wire);
+
+// orbiting glass shards
+const shards = [];
+const geoms = [new THREE.OctahedronGeometry(0.6), new THREE.TorusGeometry(0.5,0.18,16,40), new THREE.TetrahedronGeometry(0.7), new THREE.DodecahedronGeometry(0.55)];
+for(let i=0;i<10;i++){
+  const m = new THREE.Mesh(geoms[i%geoms.length], glassMat(0xd8fff0));
+  const r = 4.4 + Math.random()*2.2, a = Math.random()*Math.PI*2, y=(Math.random()-0.5)*5;
+  m.position.set(Math.cos(a)*r, y, Math.sin(a)*r);
+  m.userData = { r, a, y, spin:(Math.random()-0.5)*0.6, speed:0.1+Math.random()*0.15 };
+  shards.push(m); group.add(m);
+}
+
+// particle field
+const COUNT=900;
+const pg = new THREE.BufferGeometry();
+const pos = new Float32Array(COUNT*3);
+for(let i=0;i<COUNT;i++){
+  pos[i*3]=(Math.random()-0.5)*38;
+  pos[i*3+1]=(Math.random()-0.5)*26;
+  pos[i*3+2]=(Math.random()-0.5)*30;
+}
+pg.setAttribute('position', new THREE.BufferAttribute(pos,3));
+const particles = new THREE.Points(pg, new THREE.PointsMaterial({
+  color:0x25D366, size:0.045, transparent:true, opacity:0.8,
+  blending:THREE.AdditiveBlending, depthWrite:false
+}));
+scene.add(particles);
+
+// bloom
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight), 0.85, 0.5, 0.18);
+composer.addPass(bloom);
+
+// interaction state
+let mx=0,my=0, scrollY=0;
+addEventListener('mousemove',e=>{ mx=(e.clientX/innerWidth-0.5); my=(e.clientY/innerHeight-0.5); });
+addEventListener('scroll',()=>{ scrollY = window.scrollY / (document.body.scrollHeight-innerHeight); });
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight); composer.setSize(innerWidth,innerHeight);
+});
+
+const clock = new THREE.Clock();
+function animate(){
+  const t = clock.getElapsedTime();
+  core.rotation.y = t*0.18 + scrollY*4;
+  core.rotation.x = Math.sin(t*0.2)*0.25;
+  wire.rotation.copy(core.rotation);
+  shards.forEach(s=>{
+    s.userData.a += s.userData.speed*0.01;
+    s.position.x = Math.cos(s.userData.a)*s.userData.r;
+    s.position.z = Math.sin(s.userData.a)*s.userData.r;
+    s.position.y = s.userData.y + Math.sin(t*0.6 + s.userData.r)*0.4;
+    s.rotation.x += s.userData.spin*0.01; s.rotation.y += s.userData.spin*0.013;
+  });
+  particles.rotation.y = t*0.02;
+  // camera parallax + dolly on scroll
+  camera.position.x += (mx*2.4 - camera.position.x)*0.05;
+  camera.position.y += (-my*1.6 - camera.position.y)*0.05;
+  const targetZ = 11 - scrollY*3.5;
+  camera.position.z += (targetZ - camera.position.z)*0.05;
+  camera.lookAt(0,0,0);
+  group.position.y = scrollY*2.0;
+  composer.render();
+  requestAnimationFrame(animate);
+}
+animate();
+
+// scroll reveals
+const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:0.18});
+document.querySelectorAll('.reveal').forEach((el,i)=>{ el.style.transitionDelay=(i%4*0.08)+'s'; io.observe(el); });
+</script>
+</body>
+</html>

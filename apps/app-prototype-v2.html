@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CHASKI App — Transcribe your WhatsApp archive (demo)</title>
+<meta name="robots" content="noindex" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{--green:#25D366;--green-deep:#0f8a4f;--teal:#0bd4c0;--bg:#04100a;--panel:rgba(12,30,22,.6);
+    --line:rgba(37,211,102,.25);--text:#e9fff3;--muted:#9fc8b3;--amber:#ffce5a}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:radial-gradient(ellipse at 50% -10%,#0a2417,#04100a 60%);color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;min-height:100vh}
+  a{color:var(--green)}
+  header{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(16px,5vw,40px);border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:11px;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:.16em}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 16px var(--green)}
+  .pill{font-size:12px;color:var(--amber);border:1px solid rgba(255,206,90,.4);border-radius:20px;padding:4px 12px}
+  main{max-width:880px;margin:0 auto;padding:clamp(22px,5vw,48px) clamp(16px,5vw,40px)}
+  h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,4vw,38px);margin-bottom:8px}
+  p.sub{color:var(--muted);font-size:15px;line-height:1.6;margin-bottom:24px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px;backdrop-filter:blur(10px);margin-bottom:22px}
+  .btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;padding:12px 22px;border-radius:28px;cursor:pointer;border:1px solid transparent;background:var(--green);color:#04130c;transition:.2s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 0 24px rgba(37,211,102,.45)}
+  .btn.ghost{background:transparent;border-color:var(--line);color:var(--text)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+  .drop{border:2px dashed var(--line);border-radius:14px;padding:34px;text-align:center;cursor:pointer;transition:.2s;color:var(--muted)}
+  .drop:hover,.drop.over{border-color:var(--green);background:rgba(37,211,102,.06);color:var(--text)}
+  .drop .big{font-size:30px;margin-bottom:8px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .bar{height:8px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden;margin:14px 0}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--teal));transition:width .3s}
+  .muted{color:var(--muted);font-size:13px}
+  .tx{white-space:pre-wrap;line-height:1.7;font-size:15px;max-height:340px;overflow:auto;background:rgba(0,0,0,.22);border-radius:12px;padding:16px}
+  .stat{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 4px}
+  .stat b{font-family:'Space Grotesk',sans-serif;font-size:22px;color:var(--green)}
+  .hide{display:none}
+  footer{max-width:880px;margin:0 auto;padding:18px 40px 40px;color:var(--muted);font-size:13px}
+  /* gate */
+  #gate{position:fixed;inset:0;z-index:99;background:#04100a;display:flex;align-items:center;justify-content:center}
+  #gate .box{max-width:360px;width:90%;text-align:center}
+  #gate input{width:100%;padding:13px 16px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.25);color:var(--text);font-size:15px;margin-top:6px;box-sizing:border-box}
+</style>
+</head>
+<body>
+<!-- INVITE GATE (code: [redacted]; stored as SHA-256) -->
+<div id="gate"><div class="box">
+  <div class="brand" style="justify-content:center;margin-bottom:10px"><span class="dot"></span> CHASKI · INVITE-ONLY</div>
+  <p class="muted">Private demo. Enter your access code.</p>
+  <input id="gcode" type="password" autocomplete="off" placeholder="Access code" />
+  <button class="btn" style="margin-top:12px;width:100%" id="gbtn">Enter</button>
+  <p id="gerr" class="hide" style="color:#ff6b6b;font-size:13px;margin-top:10px">Incorrect code.</p>
+</div></div>
+
+<header>
+  <div class="brand"><span class="dot"></span> CHASKI</div>
+  <span class="pill">Demo · simulated · no data leaves this page</span>
+</header>
+
+<main>
+  <h1>Transcribe your WhatsApp archive</h1>
+  <p class="sub">Drop a WhatsApp export and watch it become a faithful transcript and an ordered manuscript. <b>This is a simulated demo</b> — it runs entirely in your browser, sends nothing anywhere, and touches no backend.</p>
+
+  <div class="panel">
+    <div id="drop" class="drop" tabindex="0" role="button" aria-label="Choose a file">
+      <div class="big">📁</div>
+      <div id="droplabel">Drop a file here, or click to choose</div>
+      <div class="muted" style="margin-top:6px">.zip / .txt / .opus / .mp3 — nothing is uploaded</div>
+    </div>
+    <input id="file" type="file" class="hide" />
+    <div class="row" style="margin-top:16px">
+      <button class="btn" id="go" disabled>Transcribe (demo)</button>
+      <button class="btn ghost" id="reset">Reset</button>
+      <span id="picked" class="muted"></span>
+    </div>
+    <div id="prog" class="hide">
+      <div class="bar"><i id="fill"></i></div>
+      <div class="muted" id="stage">Queued…</div>
+    </div>
+  </div>
+
+  <div id="result" class="panel hide">
+    <div class="stat">
+      <span><b id="sNotes">0</b><br><span class="muted">voice notes</span></span>
+      <span><b id="sMin">0</b><br><span class="muted">minutes</span></span>
+      <span><b id="sPages">0</b><br><span class="muted">manuscript pages</span></span>
+    </div>
+    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:18px;margin:14px 0 8px">Transcript (sample)</h2>
+    <div id="tx" class="tx"></div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" id="dlTxt">Download transcript (.txt)</button>
+      <button class="btn ghost" id="dlMd">Export manuscript (.md)</button>
+      <a class="btn ghost" href="../#waitlist">Request real access →</a>
+    </div>
+  </div>
+</main>
+<footer>CHASKI · transcription demo · invite-only · for the live pipeline, request access. Your knowledge lives in WhatsApp — we make it usable.</footer>
+
+<script>
+(function(){
+  // ---------- access gate ----------
+  var HASH="eeec6f966683cdc03e229ee3aefdf5471bd721a77e0d8292f6023b7e5b3dc6a0", KEY="chaski_proto_ok";
+  var gate=document.getElementById('gate');
+  function unlock(){gate.style.display='none';}
+  try{if(sessionStorage.getItem(KEY)==='1'){unlock();}}catch(e){}
+  async function sha(s){var b=new TextEncoder().encode(s);var h=await crypto.subtle.digest('SHA-256',b);
+    return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+  async function chk(){var v=document.getElementById('gcode').value.trim();
+    if(await sha(v)===HASH){try{sessionStorage.setItem(KEY,'1')}catch(e){}unlock();}
+    else{document.getElementById('gerr').classList.remove('hide');}}
+  document.getElementById('gbtn').onclick=chk;
+  document.getElementById('gcode').addEventListener('keydown',e=>{if(e.key==='Enter')chk();});
+
+  // ---------- helpers (XSS-safe: we only ever set textContent) ----------
+  var $=id=>document.getElementById(id);
+  var picked=null;
+  function setPicked(name){ picked=name; $('picked').textContent = name?('Selected: '+name):''; $('go').disabled=!name; }
+
+  // file selection (no upload — we never read/transmit contents)
+  var drop=$('drop'), file=$('file');
+  drop.onclick=()=>file.click();
+  drop.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')file.click();};
+  file.onchange=()=>{ if(file.files[0]) setPicked(file.files[0].name); };
+  ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
+  ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
+  drop.addEventListener('drop',e=>{ var f=e.dataTransfer.files[0]; if(f) setPicked(f.name); });
+
+  // sample transcript (clearly demo content)
+  var SAMPLE=
+"[00:00] Erev tov. Quería dejar registrada esta idea antes de que se me olvide.\n"+
+"[00:14] The whole point of Chaski is that your knowledge already exists — it's just trapped in voice notes.\n"+
+"[00:31] אז במקום לאבד את זה, אנחנו הופכים את זה לכתב יד מסודר.\n"+
+"[00:48] Cada nota se transcribe con fidelidad, se ordena por fecha, y se arma un manuscrito.\n"+
+"[01:05] No es una app de transcripción más — es la diferencia entre 1,186 audios sueltos y 984 páginas terminadas.\n"+
+"[01:22] (demo sample — your real archive would appear here, faithfully transcribed in ES / EN / HE.)";
+
+  function run(){
+    $('result').classList.add('hide'); $('prog').classList.remove('hide');
+    var stages=['Reading archive…','Detecting language (ES/EN/HE)…','Transcribing voice notes…','Assembling manuscript…','Finalizing…'];
+    var i=0; $('fill').style.width='0%';
+    var t=setInterval(()=>{
+      i++; $('fill').style.width=Math.min(i*20,100)+'%';
+      $('stage').textContent = stages[Math.min(i-1,stages.length-1)];
+      if(i>=5){ clearInterval(t); done(); }
+    }, 520);
+  }
+  function done(){
+    $('prog').classList.add('hide'); $('result').classList.remove('hide');
+    $('sNotes').textContent='1,186'; $('sMin').textContent='742'; $('sPages').textContent='984';
+    $('tx').textContent = SAMPLE;          // textContent => no HTML injection
+    $('result').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  $('go').onclick=run;
+  $('reset').onclick=()=>{ setPicked(null); file.value=''; $('result').classList.add('hide'); $('prog').classList.add('hide'); };
+
+  // downloads built from safe strings (Blob, no eval)
+  function dl(name, text){ var b=new Blob([text],{type:'text/plain'}); var u=URL.createObjectURL(b);
+    var a=document.createElement('a'); a.href=u; a.download=name; a.click(); URL.revokeObjectURL(u); }
+  $('dlTxt').onclick=()=>dl('chaski-transcript-demo.txt', SAMPLE);
+  $('dlMd').onclick=()=>dl('chaski-manuscript-demo.md',
+    "# Chaski — Manuscript (demo)\n\n_1,186 voice notes → 984 pages (sample)._\n\n"+SAMPLE);
+})();
+</script>
+</body>
+</html>

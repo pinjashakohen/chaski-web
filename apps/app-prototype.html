@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CHASKY App — Transcribe your WhatsApp archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{--green:#25D366;--green-deep:#0f8a4f;--teal:#0bd4c0;--bg:#04100a;--panel:rgba(12,30,22,.55);
+    --line:rgba(37,211,102,.25);--text:#e9fff3;--muted:#9fc8b3;--red:#ff6b6b;--amber:#ffce5a}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:radial-gradient(ellipse at 50% -10%,#0a2417,#04100a 60%);color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+  a{color:var(--green)}
+  header{display:flex;align-items:center;justify-content:space-between;padding:20px clamp(18px,5vw,48px);
+    border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:11px;font-family:'Space Grotesk',sans-serif;font-weight:700;
+    letter-spacing:.16em}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 16px var(--green)}
+  .who{font-size:13px;color:var(--muted);display:flex;gap:14px;align-items:center}
+  .btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;padding:11px 22px;border-radius:30px;
+    cursor:pointer;border:1px solid transparent;background:var(--green);color:#04130c;transition:all .25s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 0 26px rgba(37,211,102,.5)}
+  .btn.ghost{background:transparent;border-color:var(--line);color:var(--text)}
+  .btn.ghost:hover{border-color:var(--green);box-shadow:none}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+  main{max-width:920px;margin:0 auto;padding:clamp(24px,5vw,56px) clamp(18px,5vw,48px)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:30px;
+    backdrop-filter:blur(12px);margin-bottom:26px}
+  h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,4vw,40px);letter-spacing:-.01em;margin-bottom:10px}
+  h2{font-family:'Space Grotesk',sans-serif;font-size:20px;margin-bottom:6px}
+  p.sub{color:var(--muted);font-size:15px;line-height:1.55;margin-bottom:22px}
+  label{display:block;font-size:13px;color:var(--muted);margin:14px 0 7px;letter-spacing:.02em}
+  input[type=email],input[type=text]{width:100%;padding:13px 16px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(0,0,0,.25);color:var(--text);font-size:15px;font-family:inherit}
+  input:focus{outline:none;border-color:var(--green)}
+  .drop{border:2px dashed var(--line);border-radius:16px;padding:38px;text-align:center;cursor:pointer;
+    transition:all .25s;color:var(--muted)}
+  .drop:hover,.drop.over{border-color:var(--green);background:rgba(37,211,102,.06);color:var(--text)}
+  .drop .big{font-size:34px;margin-bottom:10px}
+  .hidden{display:none!important}
+  .msg{font-size:13.5px;padding:11px 14px;border-radius:10px;margin-top:14px}
+  .msg.err{background:rgba(255,107,107,.12);color:var(--red);border:1px solid rgba(255,107,107,.3)}
+  .msg.ok{background:rgba(37,211,102,.12);color:var(--green);border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
+  th{text-align:left;color:var(--muted);font-weight:500;font-size:12px;letter-spacing:.05em;
+    padding:10px 12px;border-bottom:1px solid var(--line)}
+  td{padding:13px 12px;border-bottom:1px solid rgba(159,200,179,.1)}
+  .pill{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.06em;padding:5px 12px;border-radius:20px;
+    display:inline-flex;align-items:center;gap:6px;text-transform:uppercase}
+  .pill::before{content:"";width:7px;height:7px;border-radius:50%}
+  .pill.queued{background:rgba(255,206,90,.14);color:var(--amber)} .pill.queued::before{background:var(--amber)}
+  .pill.running{background:rgba(11,212,192,.14);color:var(--teal)} .pill.running::before{background:var(--teal);animation:pulse 1s infinite}
+  .pill.completed{background:rgba(37,211,102,.14);color:var(--green)} .pill.completed::before{background:var(--green)}
+  .pill.failed{background:rgba(255,107,107,.14);color:var(--red)} .pill.failed::before{background:var(--red)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .config-note{font-size:12px;color:var(--muted);background:rgba(0,0,0,.25);border:1px dashed var(--line);
+    border-radius:10px;padding:12px 14px;margin-top:18px;line-height:1.5}
+  .empty{color:var(--muted);text-align:center;padding:26px;font-size:14px}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:30px;letter-spacing:.04em}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--green);
+    border-radius:50%;animation:rot .8s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes rot{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<!-- ACCESS GATE (invite-only). To change the code, replace GATE_HASH with the
+     SHA-256 of your new code. Current code: [redacted] -->
+<div id="access-gate" style="position:fixed;inset:0;z-index:99999;background:#04100a;display:flex;align-items:center;justify-content:center;font-family:'Inter',system-ui,sans-serif">
+  <div style="max-width:380px;width:90%;text-align:center;color:#e9fff3">
+    <div style="font-weight:700;letter-spacing:.16em;margin-bottom:8px">CHASKI · INVITE-ONLY</div>
+    <p style="color:#9fc8b3;font-size:14px;line-height:1.5;margin-bottom:18px">This prototype is private. Enter your access code to continue.</p>
+    <input id="gate-input" type="password" placeholder="Access code" autocomplete="off" style="width:100%;padding:13px 16px;border-radius:12px;border:1px solid rgba(37,211,102,.25);background:rgba(0,0,0,.25);color:#e9fff3;font-size:15px;box-sizing:border-box" />
+    <button id="gate-btn" style="margin-top:12px;width:100%;padding:12px;border-radius:30px;border:0;background:#25D366;color:#04130c;font-weight:600;cursor:pointer">Enter</button>
+    <p id="gate-err" style="display:none;color:#ff6b6b;font-size:13px;margin-top:10px">Incorrect code.</p>
+  </div>
+</div>
+<script>
+(function(){
+  var GATE_HASH="eeec6f966683cdc03e229ee3aefdf5471bd721a77e0d8292f6023b7e5b3dc6a0";
+  var KEY="chaski_proto_ok", gate=document.getElementById('access-gate');
+  function unlock(){ gate.style.display='none'; document.body.style.overflow=''; }
+  try{ if(sessionStorage.getItem(KEY)==="1"){ unlock(); return; } }catch(e){}
+  document.body.style.overflow='hidden';
+  async function sha256(s){ var b=new TextEncoder().encode(s); var h=await crypto.subtle.digest('SHA-256',b);
+    return Array.from(new Uint8Array(h)).map(function(x){return x.toString(16).padStart(2,'0')}).join(''); }
+  async function check(){
+    var v=document.getElementById('gate-input').value.trim(); var h=await sha256(v);
+    if(h===GATE_HASH){ try{sessionStorage.setItem(KEY,"1")}catch(e){} unlock(); }
+    else { document.getElementById('gate-err').style.display='block'; }
+  }
+  document.getElementById('gate-btn').addEventListener('click',check);
+  document.getElementById('gate-input').addEventListener('keydown',function(e){ if(e.key==='Enter') check(); });
+})();
+</script>
+<header>
+  <div class="brand"><span class="dot"></span>CHASKY</div>
+  <div class="who" id="who"></div>
+</header>
+
+<main>
+  <!-- CONFIG GATE (shown only if keys missing) -->
+  <section id="configGate" class="panel hidden">
+    <h2>One-time setup</h2>
+    <p class="sub">This prototype needs your Supabase project URL and anon (publishable) key. Paste them once — they stay in this browser only. In production these are baked into the deployed app's env.</p>
+    <label>Supabase URL <span style="color:var(--muted)">(e.g. https://supabase.pinjasemet.com)</span></label>
+    <input id="cfgUrl" type="text" placeholder="https://supabase.pinjasemet.com" />
+    <label>Supabase anon key</label>
+    <input id="cfgKey" type="text" placeholder="eyJhbGciOi..." />
+    <div style="margin-top:18px"><button class="btn" id="cfgSave">Save & continue</button></div>
+  </section>
+
+  <!-- AUTH -->
+  <section id="authView" class="panel hidden">
+    <h1>Bring your voices into the light</h1>
+    <p class="sub">Sign in with a magic link. Upload a WhatsApp chat export, and CHASKY returns a searchable, printable manuscript.</p>
+    <label>Email</label>
+    <input id="email" type="email" placeholder="you@example.com" />
+    <div style="margin-top:18px"><button class="btn" id="sendLink">Send magic link →</button></div>
+    <div id="authMsg"></div>
+  </section>
+
+  <!-- APP -->
+  <section id="appView" class="hidden">
+    <div class="panel">
+      <h2>Upload a WhatsApp export</h2>
+      <p class="sub">Export a chat from WhatsApp (Settings → Chats → Export chat → <b>Attach media</b>) and drop the <code>.zip</code> here.</p>
+      <div class="drop" id="drop">
+        <div class="big">📂</div>
+        <div id="dropText">Drag your export .zip here, or click to choose</div>
+        <input id="file" type="file" accept=".zip" class="hidden" />
+      </div>
+      <div id="upMsg"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Your transcriptions</h2>
+      <p class="sub">Jobs run on the worker and update live. Completed manuscripts can be downloaded.</p>
+      <div id="jobsWrap"><div class="empty">No jobs yet — upload an export to begin.</div></div>
+    </div>
+  </section>
+
+  <div class="config-note" id="resetWrap" style="display:none">
+    Connected to <b id="cfgShow"></b>. <a href="#" id="resetCfg">Change connection</a>
+  </div>
+</main>
+
+<footer>CHASKY · JumashEmet engine · prototype connected to your Supabase backend</footer>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const $ = s => document.querySelector(s);
+const show = (el,on=true)=>$(el).classList[on?'remove':'add']('hidden');
+const LS = { url:'chasky_sb_url', key:'chasky_sb_key' };
+
+let sb=null, accountId=null, pollTimer=null;
+
+function setMsg(sel,text,kind){ const el=$(sel); el.innerHTML = text?`<div class="msg ${kind}">${text}</div>`:''; }
+
+// ---------- config ----------
+function loadCfg(){ return { url:localStorage.getItem(LS.url), key:localStorage.getItem(LS.key) }; }
+function initClient(){
+  const {url,key}=loadCfg();
+  if(!url||!key){ show('#configGate',true); show('#authView',false); show('#appView',false); return false; }
+  sb = createClient(url,key,{ auth:{ persistSession:true, autoRefreshToken:true } });
+  $('#cfgShow').textContent = url; $('#resetWrap').style.display='block';
+  show('#configGate',false);
+  return true;
+}
+$('#cfgSave').onclick = ()=>{
+  const u=$('#cfgUrl').value.trim(), k=$('#cfgKey').value.trim();
+  if(!u||!k){ alert('Both fields are required.'); return; }
+  localStorage.setItem(LS.url,u); localStorage.setItem(LS.key,k);
+  if(initClient()) boot();
+};
+$('#resetCfg').onclick = e=>{ e.preventDefault(); localStorage.removeItem(LS.url); localStorage.removeItem(LS.key); location.reload(); };
+
+// ---------- auth ----------
+$('#sendLink').onclick = async ()=>{
+  const email=$('#email').value.trim();
+  if(!email){ setMsg('#authMsg','Enter your email first.','err'); return; }
+  $('#sendLink').disabled=true;
+  const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.href } });
+  $('#sendLink').disabled=false;
+  if(error){ setMsg('#authMsg',error.message,'err'); return; }
+  setMsg('#authMsg','Check your inbox — click the magic link to sign in.','ok');
+};
+
+async function resolveAccount(){
+  // personal account = the user's membership row
+  const { data, error } = await sb.from('accounts_memberships').select('account_id').limit(1);
+  if(error) throw error;
+  if(!data || !data.length) throw new Error('No account found for this user. Create one in the app first.');
+  return data[0].account_id;
+}
+
+async function renderSession(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session){ show('#authView',true); show('#appView',false); $('#who').innerHTML=''; return; }
+  $('#who').innerHTML = `<span>${session.user.email}</span><button class="btn ghost" id="logout">Sign out</button>`;
+  $('#logout').onclick = async ()=>{ await sb.auth.signOut(); location.reload(); };
+  show('#authView',false); show('#appView',true);
+  try{ accountId = await resolveAccount(); }
+  catch(e){ setMsg('#upMsg', e.message, 'err'); return; }
+  loadJobs();
+}
+
+// ---------- upload ----------
+const drop=$('#drop'), fileInput=$('#file');
+drop.onclick=()=>fileInput.click();
+['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>{ if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+fileInput.onchange=()=>{ if(fileInput.files[0]) handleFile(fileInput.files[0]); };
+
+async function handleFile(file){
+  if(!file.name.toLowerCase().endsWith('.zip')){ setMsg('#upMsg','Please upload a .zip export.','err'); return; }
+  if(!accountId){ setMsg('#upMsg','No account resolved yet.','err'); return; }
+  setMsg('#upMsg',`<span class="spin"></span>Uploading ${file.name}…`,'ok');
+  try{
+    const path = `${accountId}/${crypto.randomUUID()}-${file.name}`;
+    const up = await sb.storage.from('manuscript-exports').upload(path, file, { upsert:false });
+    if(up.error) throw up.error;
+    const ce = await sb.from('chat_exports').insert({ account_id:accountId, storage_path:path, status:'pending' }).select().single();
+    if(ce.error) throw ce.error;
+    const job = await sb.from('transcription_jobs').insert({ account_id:accountId, chat_export_id:ce.data.id, status:'queued', provider:'local' }).select().single();
+    if(job.error) throw job.error;
+    setMsg('#upMsg',`Uploaded — job queued. The worker will pick it up shortly.`,'ok');
+    fileInput.value='';
+    loadJobs();
+  }catch(e){ setMsg('#upMsg', 'Upload failed: '+(e.message||e), 'err'); }
+}
+
+// ---------- jobs ----------
+async function loadJobs(){
+  if(!accountId) return;
+  const { data:jobs, error } = await sb.from('transcription_jobs')
+    .select('id,status,provider,created_at,chat_export_id')
+    .eq('account_id',accountId).order('created_at',{ascending:false}).limit(50);
+  if(error){ $('#jobsWrap').innerHTML=`<div class="msg err">${error.message}</div>`; return; }
+  if(!jobs.length){ $('#jobsWrap').innerHTML='<div class="empty">No jobs yet — upload an export to begin.</div>'; stopPoll(); return; }
+
+  // fetch manuscripts for completed jobs
+  const done = jobs.filter(j=>j.status==='completed').map(j=>j.id);
+  let mans={};
+  if(done.length){
+    const { data:m } = await sb.from('manuscripts').select('job_id,title,pdf_path,markdown_path').in('job_id',done);
+    (m||[]).forEach(x=>mans[x.job_id]=x);
+  }
+
+  let rows = jobs.map(j=>{
+    const d = new Date(j.created_at).toLocaleString();
+    let action='—';
+    if(j.status==='completed' && mans[j.id]){ action=`<button class="btn ghost dl" data-job="${j.id}">Download</button>`; }
+    else if(j.status==='completed'){ action='<span style="color:var(--muted)">processing output…</span>'; }
+    return `<tr>
+      <td>${d}</td>
+      <td><span class="pill ${j.status}">${j.status}</span></td>
+      <td style="color:var(--muted)">${j.provider}</td>
+      <td>${action}</td></tr>`;
+  }).join('');
+
+  $('#jobsWrap').innerHTML = `<table><thead><tr><th>Submitted</th><th>Status</th><th>Engine</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+  document.querySelectorAll('.dl').forEach(b=> b.onclick=()=>downloadManuscript(mans[b.dataset.job]));
+
+  // keep polling while anything is active
+  if(jobs.some(j=>j.status==='queued'||j.status==='running')) startPoll(); else stopPoll();
+}
+function startPoll(){ if(!pollTimer) pollTimer=setInterval(loadJobs,6000); }
+function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer=null; } }
+
+async function downloadManuscript(m){
+  const p = m.pdf_path || m.markdown_path;
+  if(!p){ alert('No output file recorded yet.'); return; }
+  const { data, error } = await sb.storage.from('manuscript-exports').createSignedUrl(p, 3600);
+  if(error){ alert('Could not create download link: '+error.message); return; }
+  window.open(data.signedUrl,'_blank');
+}
+
+// ---------- boot ----------
+async function boot(){
+  if(!sb) return;
+  show('#authView',true);
+  sb.auth.onAuthStateChange(()=>renderSession());
+  await renderSession();
+}
+if(initClient()){ // prefill if returning
+  const {url,key}=loadCfg(); $('#cfgUrl').value=url||''; $('#cfgKey').value=key||'';
+  boot();
+}
+</script>
+</body>
+</html>

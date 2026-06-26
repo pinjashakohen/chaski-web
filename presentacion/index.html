@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CHASKI · Presentación premiada</title>
+<meta name="description" data-i18n-attr="content:meta_desc" content="Presentación de marketing de Chaski — 2.º lugar en el MKT Bootcamp, beca KetherLabs DataCamp. Video y diapositivas." />
+<meta property="og:title" content="CHASKI · Presentación premiada (2.º lugar · MKT Bootcamp)" />
+<meta property="og:description" content="Video Loom + diapositivas de la presentación que me otorgó la beca KetherLabs DataCamp." />
+<meta property="og:type" content="video.other" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Montserrat:wght@700;800&family=Heebo:wght@400;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/styles.css" />
+<style>
+  .media{max-width:960px;margin:0 auto}
+  .ratio{position:relative;width:100%;padding-top:56.25%;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#000}
+  .ratio iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .pdfwrap{width:100%;height:min(78vh,820px);border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--bg-2)}
+  .pdfwrap iframe{width:100%;height:100%;border:0}
+  .poster{display:block;max-width:520px;width:100%;margin:0 auto 18px;border-radius:14px;border:1px solid var(--line);background:#fff;padding:14px;box-sizing:border-box}
+  .ctarow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+  .mt48{margin-top:48px}
+</style>
+</head>
+<body>
+
+<header class="bar"><div class="wrap">
+  <a class="brand" href="../" style="color:inherit"><span class="dot"></span> CHASKI</a>
+  <nav>
+    <a href="../" data-i18n="nav_home">Inicio</a>
+    <a href="../links/" data-i18n="nav_links">Enlaces</a>
+    <div class="lang" role="group" aria-label="Language"><button data-lang="es" aria-pressed="true">ES</button><button data-lang="en" aria-pressed="false">EN</button><button data-lang="he" aria-pressed="false">עב</button></div>
+  </nav>
+</div></header>
+
+<main>
+  <section class="hero" style="padding-bottom:14px"><div class="wrap center">
+    <p class="kicker" data-i18n="kicker">Presentación de marketing</p>
+    <h1 style="font-size:clamp(1.9rem,5vw,3rem)" data-i18n="h1">Presentación premiada — 2.º lugar</h1>
+    <p class="lede" style="margin:0 auto" data-i18n="lede">Mi presentación que ganó el 2.º lugar en el MKT Bootcamp y me otorgó la beca KetherLabs DataCamp.</p>
+    <div class="badge-row" style="justify-content:center;margin-top:14px">
+      <span class="badge" data-i18n="b_place">2.º lugar · MKT Bootcamp</span>
+      <span class="badge" data-i18n="b_sch">Beca KetherLabs DataCamp</span>
+    </div>
+  </div></section>
+
+  <!-- VIDEO (Loom) -->
+  <section style="padding-top:6px"><div class="wrap">
+    <h2 class="section-title center" data-i18n="video_h">El video</h2>
+    <div class="media">
+      <div class="ratio">
+        <iframe src="https://www.loom.com/embed/a6c611e71a494eaca4ab0dbdbd691516?hide_owner=true&hide_share=true&hideEmbedTopBar=true"
+                title="Chaski — presentación (Loom)" allowfullscreen></iframe>
+      </div>
+      <div class="ctarow">
+        <a class="btn btn-ghost" href="https://www.loom.com/share/a6c611e71a494eaca4ab0dbdbd691516" target="_blank" rel="noopener" data-i18n="open_loom">Abrir en Loom ↗</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/peter-adler-asch-1bb12abb/" target="_blank" rel="noopener" data-i18n="view_li">Ver en LinkedIn ↗</a>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- SLIDES (PDF) -->
+  <section class="mt48"><div class="wrap">
+    <h2 class="section-title center" data-i18n="slides_h">Las diapositivas</h2>
+    <p class="section-sub center" data-i18n="slides_sub">La presentación completa, tal como la compartí en LinkedIn.</p>
+    <div class="media">
+      <img class="poster" src="../assets/ecosistema-pinjas.svg" alt="Ecosistema Pinjas · Chaski" />
+      <div class="pdfwrap">
+        <iframe src="../assets/presentation/chaski-presentacion.pdf#view=FitH&toolbar=1" title="Chaski — diapositivas (PDF)"></iframe>
+      </div>
+      <div class="ctarow">
+        <a class="btn btn-amber" href="../assets/presentation/chaski-presentacion.pdf" target="_blank" rel="noopener" data-i18n="open_pdf">Abrir / descargar PDF</a>
+        <a class="btn btn-ghost" href="../assets/presentation/chaski-presentacion.pptx" data-i18n="open_pptx">Descargar PPTX</a>
+        <a class="btn btn-ghost" href="../" data-i18n="back_home">Volver al inicio</a>
+      </div>
+    </div>
+  </div></section>
+</main>
+
+<footer><div class="wrap">
+  <div class="legal"><a class="brand" href="../" style="font-size:.95rem;color:inherit"><span class="dot"></span> CHASKI</a><p style="margin:8px 0 0" data-i18n="foot_legal">Marca registrada en Indecopi (Perú): «Chaski, el Perú mitológico». CHASKI es el nombre paraguas del ecosistema bajo esta marca. Operada por entidades legales separadas para fines comerciales y sin fines de lucro. © <span id="year">2026</span> Pinjas ben David. Todos los derechos reservados.</p></div>
+</div></footer>
+
+<script>
+window.I18N = {
+ es:{__title:"CHASKI · Presentación premiada",meta_desc:"Presentación de marketing de Chaski — 2.º lugar en el MKT Bootcamp, beca KetherLabs DataCamp. Video y diapositivas.",nav_home:"Inicio",nav_links:"Enlaces",kicker:"Presentación de marketing",h1:"Presentación premiada — 2.º lugar",lede:"Mi presentación que ganó el 2.º lugar en el MKT Bootcamp y me otorgó la beca KetherLabs DataCamp.",b_place:"2.º lugar · MKT Bootcamp",b_sch:"Beca KetherLabs DataCamp",video_h:"El video",open_loom:"Abrir en Loom ↗",view_li:"Ver en LinkedIn ↗",slides_h:"Las diapositivas",slides_sub:"La presentación completa, tal como la compartí en LinkedIn.",open_pdf:"Abrir / descargar PDF",open_pptx:"Descargar PPTX",back_home:"Volver al inicio",foot:"© <span id='year'>2026</span> Pinjas ben David · Pinjas Knowledge Infrastructure."},
+ en:{__title:"CHASKI · Award-winning presentation",meta_desc:"Chaski marketing presentation — 2nd place at the MKT Bootcamp, KetherLabs DataCamp scholarship. Video and slides.",nav_home:"Home",nav_links:"Links",kicker:"Marketing presentation",h1:"Award-winning presentation — 2nd place",lede:"My 2nd-place-winning presentation at the MKT Bootcamp that won me the KetherLabs DataCamp scholarship.",b_place:"2nd place · MKT Bootcamp",b_sch:"KetherLabs DataCamp scholarship",video_h:"The video",open_loom:"Open in Loom ↗",view_li:"View on LinkedIn ↗",slides_h:"The slides",slides_sub:"The full deck, as I shared it on LinkedIn.",open_pdf:"Open / download PDF",open_pptx:"Download PPTX",back_home:"Back to home",foot:"© <span id='year'>2026</span> Pinjas ben David · Pinjas Knowledge Infrastructure."},
+ he:{__title:"CHASKI · מצגת זוכת פרס",meta_desc:"מצגת השיווק של צ'אסקי — מקום שני ב-MKT Bootcamp, מלגת KetherLabs DataCamp. וידאו ושקופיות.",nav_home:"בית",nav_links:"קישורים",kicker:"מצגת שיווק",h1:"מצגת זוכת פרס — מקום שני",lede:"המצגת שלי שזכתה במקום השני ב-MKT Bootcamp וזיכתה אותי במלגת KetherLabs DataCamp.",b_place:"מקום שני · MKT Bootcamp",b_sch:"מלגת KetherLabs DataCamp",video_h:"הווידאו",open_loom:"פתחו ב-Loom ↗",view_li:"צפו בלינקדאין ↗",slides_h:"השקופיות",slides_sub:"המצגת המלאה, כפי ששיתפתי בלינקדאין.",open_pdf:"פתח / הורד PDF",open_pptx:"הורד PPTX",back_home:"חזרה לבית",foot:"© <span id='year'>2026</span> פנחס בן דוד · Pinjas Knowledge Infrastructure."}
+};
+</script>
+<script src="../assets/i18n.js"></script>
+</body>
+</html>

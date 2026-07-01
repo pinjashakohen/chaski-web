@@ -11,9 +11,9 @@
   var KEY = "chaski_lang";
   // Canonical legal footer — applied site-wide to any [data-i18n="foot_legal"] element.
   var LEGAL = {
-    es: "Marca registrada en Indecopi (Perú): «Chaski, el Perú mitológico». CHASKI es el nombre paraguas del ecosistema bajo esta marca. Operada por entidades legales separadas para fines comerciales y sin fines de lucro. © <span id='year'>2026</span> Pinjas ben David. Todos los derechos reservados.",
-    en: "Registered trademark at Indecopi (Peru): “Chaski, el Perú mitológico.” CHASKI is the ecosystem's umbrella name under this mark. Operated by separate legal entities for commercial and non-profit purposes. © <span id='year'>2026</span> Pinjas ben David. All rights reserved.",
-    he: "סימן מסחר רשום ב-Indecopi (פרו): «Chaski, el Perú mitológico». CHASKI הוא שם-המטרייה של האקוסיסטם תחת סימן זה. מופעל על-ידי ישויות משפטיות נפרדות למטרות מסחריות ולמטרות ללא כוונת רווח. © <span id='year'>2026</span> פנחס בן דוד. כל הזכויות שמורות."
+    es: "Marca registrada en Indecopi (Perú): «Chaski, el poder mitológico». CHASKI es el nombre paraguas del ecosistema bajo esta marca. Operada por entidades legales separadas para fines comerciales y sin fines de lucro. © <span id='year'>2026</span> Pinjas ben David. Todos los derechos reservados.",
+    en: "Registered trademark at Indecopi (Peru): “Chaski, el poder mitológico.” CHASKI is the ecosystem's umbrella name under this mark. Operated by separate legal entities for commercial and non-profit purposes. © <span id='year'>2026</span> Pinjas ben David. All rights reserved.",
+    he: "סימן מסחר רשום ב-Indecopi (פרו): «Chaski, el poder mitológico». CHASKI הוא שם-המטרייה של האקוסיסטם תחת סימן זה. מופעל על-ידי ישויות משפטיות נפרדות למטרות מסחריות ולמטרות ללא כוונת רווח. © <span id='year'>2026</span> פנחס בן דוד. כל הזכויות שמורות."
   };
 
   function pick() {

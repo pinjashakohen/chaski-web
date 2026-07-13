@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CHASKY Atlas — Capture it. Find it. Keep it.</title>
+<meta name="description" content="CHASKY Atlas: capture any note, source, or summary and search your whole knowledge base full-text, newest first. Part of Pinjas Knowledge Infrastructure." />
+<meta property="og:title" content="CHASKY Atlas — Capture it. Find it. Keep it." />
+<meta property="og:description" content="Add a document, search it full-text the instant you save. Per-account, private, live." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ── Reused from the CHASKY 3D hub template (apps/chasky-tech.html), re-themed Atlas cyan ── */
+  :root{
+    --green:#38bdf8;        /* Atlas accent: sky/cyan */
+    --green-deep:#0e7490;
+    --teal:#22d3ee;
+    --ink:#04101a;
+    --bg:#040c16;
+    --glass:rgba(12,26,40,0.45);
+    --glass-line:rgba(56,189,248,0.28);
+    --text:#e9f6ff;
+    --muted:#9fbdd6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #scene{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;
+    background-image:radial-gradient(rgba(255,255,255,.6) .5px,transparent .5px);
+    background-size:3px 3px;mix-blend-mode:overlay}
+  .content{position:relative;z-index:2}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;
+    justify-content:space-between;padding:22px clamp(20px,5vw,64px);
+    backdrop-filter:blur(6px);}
+  .brand{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;
+    font-weight:700;letter-spacing:.18em;font-size:18px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 18px var(--green),0 0 40px var(--green)}
+  .brand small{font-weight:500;letter-spacing:.14em;color:var(--muted);font-size:12px}
+  .navlinks{display:flex;gap:30px;font-size:13.5px;letter-spacing:.04em;color:var(--muted)}
+  .navlinks a{color:inherit;text-decoration:none;transition:color .25s}
+  .navlinks a:hover{color:var(--green)}
+  @media(max-width:760px){.navlinks{display:none}}
+
+  section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    padding:120px clamp(20px,7vw,140px)}
+  .tag{font-family:'Space Grotesk',sans-serif;font-size:12.5px;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--green);margin-bottom:22px;
+    display:flex;align-items:center;gap:14px}
+  .tag::before{content:"";width:38px;height:1px;background:var(--green);opacity:.6}
+
+  /* HERO */
+  .hero h1{font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(46px,9vw,128px);line-height:.95;letter-spacing:-.02em;
+    background:linear-gradient(180deg,#ffffff 10%,#bfe9ff 60%,var(--green) 130%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 80px rgba(56,189,248,.25)}
+  .hero .lead{margin-top:30px;max-width:640px;font-size:clamp(17px,2.2vw,22px);
+    line-height:1.5;color:var(--text);font-weight:300}
+  .hero .lead b{color:var(--green);font-weight:600}
+  .sub{margin-top:14px;color:var(--muted);font-size:15px;max-width:580px;line-height:1.6}
+  .cta-row{margin-top:42px;display:flex;gap:16px;flex-wrap:wrap}
+  .btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;
+    padding:15px 30px;border-radius:40px;cursor:pointer;border:1px solid transparent;
+    text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:all .3s}
+  .btn.primary{background:var(--green);color:#04101a;box-shadow:0 0 30px rgba(56,189,248,.4)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(56,189,248,.65)}
+  .btn.ghost{border-color:var(--glass-line);color:var(--text);background:var(--glass);
+    backdrop-filter:blur(10px)}
+  .btn.ghost:hover{border-color:var(--green);color:var(--green)}
+
+  .scroll-hint{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);
+    font-size:11px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;
+    display:flex;flex-direction:column;align-items:center;gap:10px;animation:bob 2.4s ease-in-out infinite}
+  .scroll-hint span{width:1px;height:34px;background:linear-gradient(var(--green),transparent)}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+  /* GLASS CARD GENERIC */
+  .glass{background:var(--glass);border:1px solid var(--glass-line);
+    border-radius:22px;backdrop-filter:blur(14px);
+    box-shadow:0 20px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06)}
+  h2.section-title{font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(32px,5vw,62px);line-height:1.02;letter-spacing:-.02em;max-width:15ch}
+  .section-title em{font-style:normal;color:var(--green)}
+  .section-intro{margin-top:22px;max-width:620px;color:var(--muted);font-size:17px;line-height:1.6}
+
+  /* PROBLEM CHIPS */
+  .opus{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
+  .opus .chip{font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.05em;
+    padding:11px 18px;border-radius:30px;border:1px dashed rgba(159,189,214,.35);
+    color:var(--muted)}
+  .opus .chip.dead::after{content:" ✕";color:#ff6b6b}
+
+  /* FEATURE GRID */
+  .pipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;margin-top:54px}
+  .step{padding:30px;position:relative;overflow:hidden}
+  .step .num{font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.2em;
+    color:var(--green);opacity:.85}
+  .step h3{font-family:'Space Grotesk',sans-serif;font-size:22px;margin:14px 0 12px}
+  .step p{color:var(--muted);font-size:15px;line-height:1.6}
+  .step .glow{position:absolute;width:140px;height:140px;border-radius:50%;
+    background:radial-gradient(var(--green),transparent 70%);opacity:.18;
+    top:-40px;right:-40px;filter:blur(6px)}
+
+  /* STATUS LINE */
+  .statusline{margin-top:54px;display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+    padding:22px 26px;font-size:15px;color:var(--text);line-height:1.6}
+  .statusline .live{display:inline-flex;align-items:center;gap:9px;font-family:'Space Grotesk',sans-serif;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+  .statusline .live::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 12px var(--green);animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .statusline b{color:var(--text)}
+  .statusline .muted{color:var(--muted)}
+
+  /* CTA FINAL */
+  .final{align-items:center;text-align:center}
+  .final h2{font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(36px,7vw,84px);line-height:1;letter-spacing:-.02em;max-width:16ch}
+  .final p{margin-top:24px;color:var(--muted);font-size:18px;max-width:560px}
+  footer{padding:50px;text-align:center;color:var(--muted);font-size:13px;
+    border-top:1px solid rgba(159,189,214,.12);letter-spacing:.04em}
+  footer b{color:var(--green)}
+  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid rgba(159,189,214,.25)}
+  footer a:hover{color:var(--green)}
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity .9s ease,transform .9s ease}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div class="grain"></div>
+
+<nav>
+  <div class="brand"><span class="dot"></span>CHASKY <small>ATLAS</small></div>
+  <div class="navlinks">
+    <a href="#problem">The Problem</a>
+    <a href="#features">What it does</a>
+    <a href="#status">Status</a>
+    <a href="#start">Start</a>
+  </div>
+</nav>
+
+<div class="content">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="tag">Pinjas Knowledge Infrastructure</div>
+    <h1>Capture it.<br>Find it. Keep it.</h1>
+    <p class="lead"><b>Atlas</b> is your private capture surface — save a note, a source, or a summary, and it becomes searchable the instant you hit save.</p>
+    <p class="sub">No batch indexing, no folders to maintain. Type a query and Atlas returns matching documents full-text, newest first — scoped to your account only.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://app.pinjasemet.com" target="_blank" rel="noopener">Open Atlas →</a>
+      <a class="btn ghost" href="#features">See what it does</a>
+    </div>
+    <div class="scroll-hint">Scroll<span></span></div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section id="problem">
+    <div class="reveal">
+      <div class="tag">The Problem</div>
+      <h2 class="section-title">Notes everywhere, <em>findable nowhere</em></h2>
+      <p class="section-intro">Ideas land in a dozen apps — chat threads, sticky notes, half-finished docs. By the time you need one, you can't remember where you put it, and search across all of them doesn't exist.</p>
+      <div class="opus">
+        <span class="chip dead">screenshot_0421.png</span>
+        <span class="chip dead">untitled note</span>
+        <span class="chip dead">that link somewhere</span>
+        <span class="chip dead">buried in a thread</span>
+        <span class="chip dead">no full-text search</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="reveal">
+      <div class="tag">What Atlas Does</div>
+      <h2 class="section-title">A capture box that <em>never loses a thing</em></h2>
+      <p class="section-intro">Four things, done well. Everything below is live in the app today — no waitlist, no "coming soon."</p>
+    </div>
+    <div class="pipe">
+      <div class="step glass reveal"><div class="glow"></div><div class="num">01 · CAPTURE</div><h3>Add a document</h3><p>Give it a title and content — a note, a summary, a source. Saved in one action, no formatting required.</p></div>
+      <div class="step glass reveal"><div class="glow"></div><div class="num">02 · SEARCH</div><h3>Full-text, instantly</h3><p>Type a query; Atlas filters your documents and returns the matches — newest first. Searchable the moment you save, with no indexing delay.</p></div>
+      <div class="step glass reveal"><div class="glow"></div><div class="num">03 · TAG</div><h3>Light-touch tags</h3><p>Attach tags to a document to group related material. Simple structure, only when you want it.</p></div>
+      <div class="step glass reveal"><div class="glow"></div><div class="num">04 · PRIVATE</div><h3>Yours alone</h3><p>Every document is isolated to your account by row-level security in Postgres. Nobody else's queries can reach your notes.</p></div>
+    </div>
+  </section>
+
+  <!-- STATUS -->
+  <section id="status">
+    <div class="reveal">
+      <div class="tag">Honest status</div>
+      <h2 class="section-title">Live, and <em>deliberately small</em></h2>
+      <div class="statusline glass reveal">
+        <span class="live">Live now</span>
+        <span><b>Atlas is shipped</b> and running inside the Pinjas app at <b>app.pinjasemet.com/home/atlas</b>. <span class="muted">Capture, full-text search, tags, and per-account isolation all work today. Search input was hardened on 2026-07-07. It is a focused capture-and-find tool — not a graph or a second-brain wiki, and it doesn't claim to be.</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section id="start" class="final">
+    <div class="reveal">
+      <div class="tag" style="justify-content:center">Start capturing</div>
+      <h2>Stop losing what you already wrote down.</h2>
+      <p>Open Atlas inside the Pinjas app, add your first document, and search it back a second later.</p>
+      <div class="cta-row" style="justify-content:center;margin-top:38px">
+        <a class="btn primary" href="https://app.pinjasemet.com" target="_blank" rel="noopener">Open Atlas →</a>
+        <a class="btn ghost" href="https://chaski.pinjasemet.com" target="_blank" rel="noopener">Back to CHASKY hub</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>CHASKY Atlas</b> · Pinjas Knowledge Infrastructure<br>
+    Part of the CHASKY suite · <a href="https://chaski.pinjasemet.com" target="_blank" rel="noopener">chaski.pinjasemet.com</a> · <a href="https://app.pinjasemet.com" target="_blank" rel="noopener">app.pinjasemet.com</a>
+  </footer>
+</div>
+
+<!-- 3D hero scene — reused from the CHASKY hub template (apps/chasky-tech.html), Atlas-tinted -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x040c16, 0.035);
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 100);
+camera.position.set(0,0,11);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const key = new THREE.PointLight(0x38bdf8, 60, 60); key.position.set(6,6,8); scene.add(key);
+const rim = new THREE.PointLight(0x22d3ee, 40, 60); rim.position.set(-8,-4,4); scene.add(rim);
+const fill = new THREE.PointLight(0xffffff, 12, 60); fill.position.set(0,3,10); scene.add(fill);
+scene.add(new THREE.AmbientLight(0x0a2438, 1.2));
+
+function glassMat(tint){
+  return new THREE.MeshPhysicalMaterial({
+    color: tint, metalness:0, roughness:0.04, transmission:1, thickness:1.6,
+    ior:1.45, clearcoat:1, clearcoatRoughness:0.08, transparent:true,
+    attenuationColor: new THREE.Color(0x38bdf8), attenuationDistance:3.2,
+    envMapIntensity:1.4
+  });
+}
+
+const group = new THREE.Group(); scene.add(group);
+
+// central hero crystal (the "atlas" — a faceted knowledge core)
+const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2.4,1), glassMat(0xeaf7ff));
+group.add(core);
+const wire = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(2.55,1)),
+  new THREE.LineBasicMaterial({ color:0x38bdf8, transparent:true, opacity:0.55 })
+);
+group.add(wire);
+
+// orbiting glass shards (captured documents in orbit)
+const shards = [];
+const geoms = [new THREE.OctahedronGeometry(0.6), new THREE.TorusGeometry(0.5,0.18,16,40), new THREE.TetrahedronGeometry(0.7), new THREE.DodecahedronGeometry(0.55)];
+for(let i=0;i<10;i++){
+  const m = new THREE.Mesh(geoms[i%geoms.length], glassMat(0xd8f2ff));
+  const r = 4.4 + Math.random()*2.2, a = Math.random()*Math.PI*2, y=(Math.random()-0.5)*5;
+  m.position.set(Math.cos(a)*r, y, Math.sin(a)*r);
+  m.userData = { r, a, y, spin:(Math.random()-0.5)*0.6, speed:0.1+Math.random()*0.15 };
+  shards.push(m); group.add(m);
+}
+
+// particle field
+const COUNT=900;
+const pg = new THREE.BufferGeometry();
+const pos = new Float32Array(COUNT*3);
+for(let i=0;i<COUNT;i++){
+  pos[i*3]=(Math.random()-0.5)*38;
+  pos[i*3+1]=(Math.random()-0.5)*26;
+  pos[i*3+2]=(Math.random()-0.5)*30;
+}
+pg.setAttribute('position', new THREE.BufferAttribute(pos,3));
+const particles = new THREE.Points(pg, new THREE.PointsMaterial({
+  color:0x38bdf8, size:0.045, transparent:true, opacity:0.8,
+  blending:THREE.AdditiveBlending, depthWrite:false
+}));
+scene.add(particles);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight), 0.85, 0.5, 0.18);
+composer.addPass(bloom);
+
+let mx=0,my=0, scrollY=0;
+addEventListener('mousemove',e=>{ mx=(e.clientX/innerWidth-0.5); my=(e.clientY/innerHeight-0.5); });
+addEventListener('scroll',()=>{ scrollY = window.scrollY / (document.body.scrollHeight-innerHeight); });
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight); composer.setSize(innerWidth,innerHeight);
+});
+
+const clock = new THREE.Clock();
+function animate(){
+  const t = clock.getElapsedTime();
+  core.rotation.y = t*0.18 + scrollY*4;
+  core.rotation.x = Math.sin(t*0.2)*0.25;
+  wire.rotation.copy(core.rotation);
+  shards.forEach(s=>{
+    s.userData.a += s.userData.speed*0.01;
+    s.position.x = Math.cos(s.userData.a)*s.userData.r;
+    s.position.z = Math.sin(s.userData.a)*s.userData.r;
+    s.position.y = s.userData.y + Math.sin(t*0.6 + s.userData.r)*0.4;
+    s.rotation.x += s.userData.spin*0.01; s.rotation.y += s.userData.spin*0.013;
+  });
+  particles.rotation.y = t*0.02;
+  camera.position.x += (mx*2.4 - camera.position.x)*0.05;
+  camera.position.y += (-my*1.6 - camera.position.y)*0.05;
+  const targetZ = 11 - scrollY*3.5;
+  camera.position.z += (targetZ - camera.position.z)*0.05;
+  camera.lookAt(0,0,0);
+  group.position.y = scrollY*2.0;
+  composer.render();
+  requestAnimationFrame(animate);
+}
+animate();
+
+const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:0.18});
+document.querySelectorAll('.reveal').forEach((el,i)=>{ el.style.transitionDelay=(i%4*0.08)+'s'; io.observe(el); });
+</script>
+</body>
+</html>
